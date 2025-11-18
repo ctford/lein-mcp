@@ -2,6 +2,7 @@
   "Leiningen task for starting nREPL with MCP support"
   (:require [leiningen.core.main :as main]
             [leiningen.core.project :as project]
+            [leiningen.core.eval :as leval]
             [leiningen.repl :as repl]))
 
 ;; Dependencies required by the MCP middleware
@@ -71,6 +72,15 @@
     (println (str "  MCP HTTP server will be available on port " mcp-port))
     (println "  Send JSON-RPC POST requests to http://localhost:" mcp-port)
     (println)
+
+    ;; Pre-load middleware namespace in project JVM to trigger server start
+    (leval/eval-in-project
+     project
+     `(do
+        (println "MCP: Loading middleware...")
+        (require 'lein-mcp.middleware)
+        (println "MCP: Middleware loaded"))
+     '(require 'lein-mcp.middleware))
 
     ;; Start nREPL with MCP middleware
     (apply repl/repl project args)))

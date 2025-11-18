@@ -5,26 +5,24 @@
 (def default-config
   {:mcp-port 8787})
 
-;; Track if server has been started
-(defonce server-started? (atom false))
+;; Start MCP server in background when middleware namespace is loaded
+;; This runs automatically when nREPL loads the middleware
+(defonce ^:private mcp-server
+  (future
+    (try
+      (println "\nMCP: Starting HTTP server...")
+      (Thread/sleep 2000) ; Give nREPL time to fully initialize
+      (server/start-server default-config)
+      (println "MCP: HTTP server ready on http://localhost:8787\n")
+      (catch Exception e
+        (println (str "\nMCP: ERROR starting server: " (.getMessage e)))
+        (.printStackTrace e)))))
 
 (defn wrap-mcp
-  "nREPL middleware that starts MCP HTTP server on first call.
-   This ensures the server starts when nREPL actually uses the middleware."
+  "nREPL middleware for MCP integration.
+   Server starts automatically when this namespace is loaded."
   [handler]
-  ;; Start server on first middleware invocation
-  (when (compare-and-set! server-started? false true)
-    (future
-      (try
-        (println "\nMCP: Starting HTTP server...")
-        (Thread/sleep 1000) ; Brief delay to let nREPL fully initialize
-        (server/start-server default-config)
-        (println "MCP: HTTP server ready on http://localhost:8787\n")
-        (catch Exception e
-          (println (str "\nMCP: ERROR starting server: " (.getMessage e)))
-          (.printStackTrace e)))))
-
-  ;; Pass through to next middleware
+  ;; Just pass through - server starts automatically above
   handler)
 
 ;; Middleware descriptor for nREPL
