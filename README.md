@@ -43,13 +43,13 @@ This will:
 
 ```bash
 # Custom nREPL port
-lein mcp :port 7888
+lein mcp :nrepl-port 7888
 
 # Custom MCP HTTP port
 lein mcp :mcp-port 9000
 
 # Both custom ports
-lein mcp :port 7888 :mcp-port 9000
+lein mcp :nrepl-port 7888 :mcp-port 9000
 ```
 
 ### Headless Mode
@@ -68,6 +68,35 @@ Add to your `project.clj`:
 :repl-options {
   :mcp-port 8787  ; Custom MCP HTTP port
   :nrepl-middleware [lein-mcp.middleware/wrap-mcp]  ; Explicit middleware (optional)
+}
+```
+
+## Using with Claude Code
+
+Claude Code can automatically discover the MCP server using the `.mcp-port` file:
+
+1. Start the MCP server in your project directory:
+   ```bash
+   cd /path/to/your/project
+   lein mcp :headless
+   ```
+
+2. The server will create a `.mcp-port` file containing the port number (default: 8787)
+
+3. Claude Code will automatically detect and connect to the MCP server when working in this directory
+
+### Manual Configuration
+
+If you need to manually configure Claude Code, add to your project's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "lein-mcp": {
+      "url": "http://localhost:8787",
+      "transport": "http"
+    }
+  }
 }
 ```
 
@@ -165,11 +194,10 @@ Search for symbols matching a pattern.
 
 The plugin exposes these resources:
 
-- `clojure://session/vars` - List of variables in current namespace
-- `clojure://session/namespaces` - All loaded namespaces
 - `clojure://session/current-ns` - Current namespace name
-- `clojure://doc/{symbol}` - Documentation for a symbol
-- `clojure://source/{symbol}` - Source code for a symbol
+- `clojure://session/namespaces` - All loaded namespaces
+- `clojure://doc/{symbol}` - Documentation for a symbol (e.g., `clojure://doc/map`)
+- `clojure://source/{symbol}` - Source code for a symbol (e.g., `clojure://source/defn`)
 
 ## Architecture
 
