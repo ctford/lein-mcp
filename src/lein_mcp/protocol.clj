@@ -161,7 +161,7 @@
                                         (filter (complement str/blank?)
                                                [output errors value]))]
               {"content" [{"type" "text"
-                          "text" (if (str/blank? result-text)
+                          "text" (if (or (str/blank? result-text) (= result-text "nil"))
                                    "No matches found"
                                    result-text)}]})
             (catch Exception e
@@ -191,14 +191,22 @@
     (cond
       (str/starts-with? uri "clojure://doc/")
       (let [symbol-name (subs uri 14)
-            code (str "(require 'clojure.repl) (with-out-str (clojure.repl/doc " symbol-name "))")
+            ;; Access var metadata directly instead of using doc macro (which doesn't work with eval)
+            code (str "(let [v (resolve '" symbol-name ")] "
+                      "(when v "
+                      "(let [m (meta v)] "
+                      "(when (:doc m) "
+                      "(str \"-------------------------\\n\" "
+                      "(:name m) \"\\n\" "
+                      "(pr-str (:arglists m)) \"\\n  \" "
+                      "(:doc m))))))")
             result (eval-code-direct current-ns code)
-            doc-content (str (:value result "") (:out result ""))]
+            doc-content (:value result)]
         {"contents" [{"uri" uri
                      "mimeType" "text/plain"
-                     "text" (if (str/blank? doc-content)
+                     "text" (if (or (str/blank? doc-content) (= doc-content "nil"))
                              (str "No documentation found for: " symbol-name)
-                             doc-content)}]})
+                             (clojure.string/replace doc-content #"^\"|\"$" ""))}]})
 
       (str/starts-with? uri "clojure://source/")
       (let [symbol-name (subs uri 17)
@@ -207,7 +215,7 @@
             source-content (str (:value result "") (:out result ""))]
         {"contents" [{"uri" uri
                      "mimeType" "text/clojure"
-                     "text" (if (str/blank? source-content)
+                     "text" (if (or (str/blank? source-content) (= source-content "nil"))
                              (str "No source found for: " symbol-name)
                              source-content)}]})
 

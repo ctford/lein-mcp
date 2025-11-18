@@ -53,6 +53,8 @@
                :server server
                :current-ns current-ns
                :initialized? initialized?)
+        ;; Write port to .mcp-port file (similar to .nrepl-port)
+        (spit ".mcp-port" (str port))
         (println (str "MCP: HTTP server started successfully on http://localhost:" port))
         server))
     (catch Exception e

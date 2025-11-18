@@ -22,7 +22,7 @@
 
    Usage:
      lein mcp                    ; Start MCP-enabled REPL (MCP on port 8787)
-     lein mcp :port 7888         ; Start nREPL on custom port
+     lein mcp :nrepl-port 7888   ; Start nREPL on custom port
      lein mcp :mcp-port 9000     ; Use custom port for MCP HTTP server
      lein mcp :headless          ; Start in headless mode (no interactive REPL)
 
