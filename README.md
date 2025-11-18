@@ -303,9 +303,9 @@ curl -X POST http://localhost:8787 \
 
 ## License
 
-Copyright © 2024
+Copyright © 2024 Chris Ford
 
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+Distributed under the Eclipse Public License version 1.0.
 
 ## Contributing
 
