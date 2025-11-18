@@ -73,32 +73,27 @@ Add to your `project.clj`:
 
 ## Using with Claude Code
 
-Claude Code can automatically discover the MCP server using the `.mcp-port` file:
-
 1. Start the MCP server in your project directory:
    ```bash
    cd /path/to/your/project
    lein mcp :headless
    ```
 
-2. The server will create a `.mcp-port` file containing the port number (default: 8787)
+   This creates a `.mcp-port` file containing the port number (useful for scripts and tooling).
 
-3. Claude Code will automatically detect and connect to the MCP server when working in this directory
+2. Configure Claude Code by adding `.mcp.json` to your project:
+   ```json
+   {
+     "mcpServers": {
+       "lein-mcp": {
+         "url": "http://localhost:8787",
+         "transport": "http"
+       }
+     }
+   }
+   ```
 
-### Manual Configuration
-
-If you need to manually configure Claude Code, add to your project's `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "lein-mcp": {
-      "url": "http://localhost:8787",
-      "transport": "http"
-    }
-  }
-}
-```
+3. Claude Code will connect to the MCP server when working in this directory
 
 ## Using with Claude Desktop
 
