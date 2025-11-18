@@ -261,10 +261,3 @@ curl -X POST http://localhost:8787 \
 Copyright © 2024 Chris Ford
 
 Distributed under the Eclipse Public License version 1.0.
-
-## Contributing
-
-Pull requests welcome! Please ensure:
-- Code follows Clojure style conventions
-- Documentation is updated
-- Changes are backwards compatible
