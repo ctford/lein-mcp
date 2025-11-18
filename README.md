@@ -6,9 +6,8 @@ A Leiningen plugin that integrates the Model Context Protocol (MCP) with nREPL, 
 
 - **Native Leiningen Integration**: Start MCP-enabled REPL with a single `lein mcp` command
 - **nREPL Middleware**: Automatically starts MCP HTTP server alongside nREPL
-- **Pure JVM**: No Babashka dependency required
 - **MCP Tools**: Provides AI assistants with tools to evaluate code, load files, switch namespaces, and search symbols
-- **MCP Resources**: Exposes session state, namespaces, variables, documentation, and source code
+- **MCP Resources**: Exposes session state, namespaces, documentation, and source code
 
 ## Installation
 
@@ -229,16 +228,6 @@ When you run `lein mcp`:
 5. Requests are translated to nREPL operations
 6. Results are returned as JSON-RPC responses
 
-## Comparison with mcp-nrepl
-
-| Feature | lein-mcp | mcp-nrepl (Babashka) |
-|---------|----------|----------------------|
-| Runtime | JVM only | Babashka required |
-| Integration | Native Lein plugin | Standalone script |
-| Setup | `lein mcp` | Manual 2-process setup |
-| Transport | HTTP/JSON-RPC | STDIO |
-| Use Case | Lein projects | Any nREPL server |
-
 ## Development
 
 ### Building
@@ -266,24 +255,6 @@ curl -X POST http://localhost:8787 \
     }
   }'
 ```
-
-## Trade-offs
-
-### Advantages of Lein Plugin Approach
-
-✅ **Single Command**: `lein mcp` vs manual two-process setup
-✅ **Native Integration**: Works seamlessly with Leiningen workflow
-✅ **Project-Scoped**: MCP server has access to project classpath
-✅ **No External Dependencies**: Pure JVM, no Babashka needed
-✅ **Familiar Configuration**: Uses standard `project.clj` and `:repl-options`
-
-### Disadvantages
-
-⚠️ **Leiningen-Only**: Doesn't work with other build tools (Clojure CLI, Boot)
-⚠️ **Two Ports**: Requires both nREPL port and MCP HTTP port
-⚠️ **JVM Startup Time**: Slower than Babashka for cold starts
-⚠️ **HTTP Transport**: Not STDIO (most MCP clients expect STDIO)
-⚠️ **Self-Connection**: MCP server connects back to its own nREPL (slight overhead)
 
 ## Roadmap
 
