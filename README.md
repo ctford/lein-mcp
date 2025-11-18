@@ -256,22 +256,6 @@ curl -X POST http://localhost:8787 \
   }'
 ```
 
-## Roadmap
-
-### Phase 2: Deep Integration
-- [ ] Single-port operation (protocol multiplexing)
-- [ ] STDIO transport option
-- [ ] Better integration with cider-nrepl middleware
-- [ ] Support for notifications (file changes, etc.)
-
-### Phase 3: Community Features
-- [ ] Publish to Clojars
-- [ ] Additional MCP tools (refactoring, testing)
-- [ ] Configuration hot-reload
-- [ ] Integration tests
-- [ ] Documentation and examples
-- [ ] CI/CD pipeline
-
 ## License
 
 Copyright © 2024 Chris Ford
