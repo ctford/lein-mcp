@@ -13,7 +13,8 @@ NC='\033[0m' # No Color
 
 # Test configuration
 MCP_PORT=8787
-TEST_PROJECT="/tmp/lein-mcp-test-project"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TEST_PROJECT="$SCRIPT_DIR/test-project"
 
 # Cleanup function
 cleanup() {
@@ -21,12 +22,11 @@ cleanup() {
     # Kill any running lein-mcp processes (both lein launcher and Java subprocess)
     pkill -9 -f "lein.*mcp" 2>/dev/null || true
     # Also kill any Java processes from the test project
-    pkill -9 -f "lein-mcp-test-project" 2>/dev/null || true
+    pkill -9 -f "test-project" 2>/dev/null || true
     # Clean up test files
     rm -f /tmp/test-file.clj
-    rm -f lein-mcp-output.log
-    # Clean up test project
-    rm -rf "$TEST_PROJECT"
+    rm -f "$TEST_PROJECT/lein-mcp-output.log"
+    rm -f "$TEST_PROJECT/.mcp-port"
 }
 
 # Set up signal handlers
@@ -42,23 +42,10 @@ mcp_request() {
         -d "$request"
 }
 
-# Step 0: Setup test project
-echo -e "${YELLOW}Step 0: Setting up test project...${NC}"
-cd /tmp
-rm -rf "$TEST_PROJECT"
-lein new app lein-mcp-test-project >/dev/null 2>&1
-
-# Add lein-mcp to test project
+# Step 0: Navigate to test project
+echo -e "${YELLOW}Step 0: Using test project at $TEST_PROJECT...${NC}"
 cd "$TEST_PROJECT"
-cat > project.clj << 'EOF'
-(defproject lein-mcp-test-project "0.1.0-SNAPSHOT"
-  :description "Test project for lein-mcp"
-  :dependencies [[org.clojure/clojure "1.12.2"]
-                 [lein-mcp "0.1.0-SNAPSHOT"]]
-  :plugins [[lein-mcp "0.1.0-SNAPSHOT"]])
-EOF
-
-echo -e "${GREEN}Test project created${NC}"
+echo -e "${GREEN}Test project ready${NC}"
 
 # Step 1: Start lein-mcp server
 echo -e "${YELLOW}Step 1: Starting lein-mcp server...${NC}"
