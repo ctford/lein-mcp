@@ -18,8 +18,10 @@ TEST_PROJECT="/tmp/lein-mcp-test-project"
 # Cleanup function
 cleanup() {
     echo -e "${YELLOW}Cleaning up...${NC}"
-    # Kill any running lein-mcp processes
-    pkill -f "lein mcp" 2>/dev/null || true
+    # Kill any running lein-mcp processes (both lein launcher and Java subprocess)
+    pkill -9 -f "lein.*mcp" 2>/dev/null || true
+    # Also kill any Java processes from the test project
+    pkill -9 -f "lein-mcp-test-project" 2>/dev/null || true
     # Clean up test files
     rm -f /tmp/test-file.clj
     rm -f lein-mcp-output.log
